@@ -1,0 +1,34 @@
+author: Myles McNamara <myles@smyl.es>
+type: lib
+description: Captive Portal WiFi RPC Library
+version: 1.0.0
+# platforms: [ cc3200, cc3220, esp32, esp8266 ]
+
+sources:
+  - src
+
+includes:
+  - include
+
+config_schema:
+  - [ "cportal", "o", {title: "Captive Portal configurations"}]
+  - [ "cportal.rpc", "o", {title: "WiFi Captive Portal configurations"}]
+  - [ "cportal.rpc.enable", "b", true, {title: "Enable WiFi captive portal RPC endpoints on device boot"}]
+  - [ "cportal.rpc.disable", "b", false, {title: "Disable RPC endpoints after successful WiFi test"}]
+
+libs:
+  - origin: https://github.com/mongoose-os-libs/wifi
+  - origin: https://github.com/mongoose-os-libs/rpc-common
+  - origin: https://github.com/tripflex/captive-portal-wifi-setup
+
+tags:
+  - c
+  - wifi
+  - setup
+  - rpc
+
+init_after:
+  - wifi
+  - http-server
+
+manifest_version: 2017-09-29
