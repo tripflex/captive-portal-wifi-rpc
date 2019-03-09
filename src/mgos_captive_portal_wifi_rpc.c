@@ -97,7 +97,7 @@ static void mgos_captive_portal_wifi_test_rpc_handler(struct mg_rpc_request_info
 
 static void test_success_cb(int ev, void *ev_data, void *userdata){
     mgos_sys_config_set_cportal_rpc_enable(false);
-    mgos_event_remove_handler(MGOS_WIFI_EV_STA_IP_ACQUIRED, ip_aquired_cb, NULL);
+    mgos_event_remove_handler(MGOS_WIFI_EV_STA_IP_ACQUIRED, test_success_cb, NULL);
 
     char *err = NULL;
     if (!save_cfg(&mgos_sys_config, &err)){
