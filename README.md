@@ -123,8 +123,7 @@ bool mgos_captive_portal_wifi_rpc_start(void);
 ```
 
 ## Changelog
-
-**1.0.0** TBD - Initial release
+**1.0.0** (March 9, 2019) - Initial release
 
 ## License
 Apache 2.0

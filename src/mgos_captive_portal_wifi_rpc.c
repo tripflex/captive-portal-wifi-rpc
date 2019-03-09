@@ -20,6 +20,8 @@
 #include "common/json_utils.h"
 #include "mgos.h"
 #include "mgos_rpc.h"
+#include "mgos_event.h"
+#include "mgos_config.h"
 #include "mgos_captive_portal_wifi_setup.h"
 
 char *s_test_ssid = NULL;
@@ -93,6 +95,21 @@ static void mgos_captive_portal_wifi_test_rpc_handler(struct mg_rpc_request_info
     (void)fi;
 }
 
+static void test_success_cb(int ev, void *ev_data, void *userdata){
+    mgos_sys_config_set_cportal_rpc_enable(false);
+    mgos_event_remove_handler(MGOS_WIFI_EV_STA_IP_ACQUIRED, ip_aquired_cb, NULL);
+
+    char *err = NULL;
+    if (!save_cfg(&mgos_sys_config, &err)){
+        LOG(LL_ERROR, ("Disable RPC Save Config Error: %s", err));
+        free(err);
+    }
+
+    (void)ev;
+    (void)ev_data;
+    (void)userdata;
+}
+
 bool mgos_captive_portal_wifi_rpc_start(void){
 
     if( ! s_captive_portal_rpc_init ){
@@ -111,5 +128,9 @@ bool mgos_captive_portal_wifi_rpc_init(void){
     if( mgos_sys_config_get_cportal_rpc_enable() ){
         mgos_captive_portal_wifi_rpc_start();
     }
+    if( mgos_sys_config_get_cportal_rpc_disable() ){
+        mgos_event_add_handler(MGOS_CAPTIVE_PORTAL_WIFI_SETUP_TEST_SUCCESS, test_success_cb, NULL);
+    }
+    
     return true;
 }
