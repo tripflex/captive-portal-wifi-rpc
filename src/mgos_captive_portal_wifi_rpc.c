@@ -80,7 +80,7 @@ static void mgos_captive_portal_wifi_test_rpc_handler(struct mg_rpc_request_info
 
     json_scanf(args.p, args.len, ri->args_fmt, &ssid, &pass );
 
-    if (mgos_conf_str_empty(s_test_ssid)){
+    if (mgos_conf_str_empty(ssid)){
         mg_rpc_send_errorf(ri, 400, "SSID is required!" );
         return;
     }
