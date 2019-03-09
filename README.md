@@ -8,6 +8,8 @@
   - [Features](#features)
   - [Settings](#settings)
   - [Installation/Usage](#installationusage)
+    - [Full Captive Portal Stack](#full-captive-portal-stack)
+    - [Only this library](#only-this-library)
     - [Use specific branch of library](#use-specific-branch-of-library)
   - [Required Libraries](#required-libraries)
   - [Available RPC EndPoints](#available-rpc-endpoints)
@@ -41,6 +43,17 @@ Check the `mos.yml` file for latest settings, all settings listed below are defa
 ```
 
 ## Installation/Usage
+
+### Full Captive Portal Stack
+If you want all of the features this library was built for, you should install the [Captive Portal WiFi Stack](https://github.com/tripflex/captive-portal-wifi-stack) library instead of just this one:
+
+Add this lib your `mos.yml` file under `libs:`
+
+```yaml
+  - origin: https://github.com/tripflex/captive-portal-wifi-stack
+```
+
+### Only this library
 Add this lib your `mos.yml` file under `libs:`
 
 ```yaml
