@@ -76,20 +76,27 @@ static void mgos_captive_portal_wifi_test_rpc_handler(struct mg_rpc_request_info
                                                       struct mg_rpc_frame_info *fi,
                                                       struct mg_str args){
 
-    LOG(LL_INFO, ("WiFi.PortalTest RPC Handler Parsing JSON") );
+    LOG(LL_INFO, ("WiFi.PortalTest RPC Handler Parsing JSON: %.*s\n", args.len, args.p) );
     char *ssid;
     char *pass;
+    char *user;
 
-    json_scanf(args.p, args.len, ri->args_fmt, &ssid, &pass );
+    json_scanf(args.p, args.len, ri->args_fmt, &ssid, &pass, &user );
 
     if (mgos_conf_str_empty(ssid)){
         mg_rpc_send_errorf(ri, 400, "SSID is required!" );
         return;
     }
 
-    LOG(LL_INFO, ("WiFi.PortalTest RPC Handler ssid: %s pass: %s", ssid, pass));
-    bool result = mgos_captive_portal_wifi_setup_test( ssid, pass, NULL, NULL );
-    mg_rpc_send_responsef(ri, "{ ssid: %Q, pass: %Q, result: %B }", ssid, pass, result);
+    if (!mgos_conf_str_empty(user)){
+        LOG(LL_INFO, ("WiFi.PortalTest RPC Handler ssid: %s pass: %s user: %u", ssid, pass, user));
+        bool result = mgos_captive_portal_wifi_setup_test_ent( ssid, pass, user, NULL, NULL );
+        mg_rpc_send_responsef(ri, "{ ssid: %Q, pass: %Q, user: %Q, result: %B }", ssid, pass, user, result);
+    } else {
+        LOG(LL_INFO, ("WiFi.PortalTest RPC Handler ssid: %s pass: %s", ssid, pass));
+        bool result = mgos_captive_portal_wifi_setup_test( ssid, pass, NULL, NULL );
+        mg_rpc_send_responsef(ri, "{ ssid: %Q, pass: %Q, result: %B }", ssid, pass, result);
+    }
 
     (void)cb_arg;
     (void)fi;
@@ -115,7 +122,7 @@ bool mgos_captive_portal_wifi_rpc_start(void){
     if( ! s_captive_portal_rpc_init ){
         // Add RPC
         struct mg_rpc *c = mgos_rpc_get_global();
-        mg_rpc_add_handler(c, "WiFi.PortalTest", "{ssid: %Q, pass: %Q}", mgos_captive_portal_wifi_test_rpc_handler, NULL);
+        mg_rpc_add_handler(c, "WiFi.PortalTest", "{ssid: %Q, pass: %Q, user: %Q}", mgos_captive_portal_wifi_test_rpc_handler, NULL);
         mg_rpc_add_handler(c, "Wifi.PortalScan", "", mgos_captive_portal_wifi_scan_rpc_handler, NULL);
         s_captive_portal_rpc_init = true;
         return true;

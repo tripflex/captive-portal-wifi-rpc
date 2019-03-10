@@ -33,6 +33,7 @@ Myles McNamara ( https://smyl.es )
 - RPC Endpoint to Scan for Wireless Networks
 - RPC Endpoint to Test WiFi connection and credentials
 - Disable RPC endpoints after successful wifi test
+- Support for Enterprise Networks
 
 ## Settings
 Check the `mos.yml` file for latest settings, all settings listed below are defaults
@@ -102,9 +103,12 @@ Start WiFi connection and credential test.  Response is returned immediately, an
 ```
 {
   ssid: "your ssid",
-  pass: "yourpassword"
+  pass: "yourpassword",
+  user: "EnterpriseUser"
 }
 ```
+
+`user` and `pass` are optional -- if `user` is passed, it is assumed the network attempting to connect to is a WPA2 Enterprise Network.
 
 **Response**
 `result` will be a boolean, `true` or `false` if the test was started successfully or not.
@@ -115,6 +119,8 @@ Start WiFi connection and credential test.  Response is returned immediately, an
   result: true
 }
 ```
+`user` will be returned in response above as well if passed in original call
+
 ## Available Functions/Methods
 
 ### C Functions
@@ -123,6 +129,7 @@ bool mgos_captive_portal_wifi_rpc_start(void);
 ```
 
 ## Changelog
+**1.0.1** (March 10, 2019) - Added support for Enterprise Networks
 **1.0.0** (March 9, 2019) - Initial release
 
 ## License
