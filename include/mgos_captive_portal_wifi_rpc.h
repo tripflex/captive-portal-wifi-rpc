@@ -27,6 +27,12 @@ extern "C"
 #endif /* __cplusplus */
 
 /**
+ * @brief Force ESP32 Device into AP+STA Mode
+ * 
+ * @return true 
+ */
+bool mgos_captive_portal_wifi_rpc_force_apsta(void);
+/**
  * Start captive portal wifi RPC handlers
  */
 bool mgos_captive_portal_wifi_rpc_start(void);

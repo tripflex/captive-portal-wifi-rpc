@@ -42,16 +42,18 @@ Check the `mos.yml` file for latest settings, all settings listed below are defa
 ```yaml
   - [ "cportal.rpc.enable", "b", true, {title: "Enable WiFi captive portal RPC endpoints on device boot"}]
   - [ "cportal.rpc.disable", "b", false, {title: "Disable RPC endpoints after successful WiFi test"}]
-  - [ "cportal.rpc.apsta", "b", true, {title: "(ESP32 only) When RPC is enabled, make sure device is in AP+STA mode to prevent client disconnect when Scan called to switch"}]
+  - [ "cportal.rpc.apsta", "b", false, {title: "(ESP32 only) When RPC is enabled, make sure device is in AP+STA mode to prevent client disconnect when Scan called to switch"}]
 ```
 
 ### `cportal.rpc.apsta` Setting
 **This only applies to ESP32 devices**
-When this setting is enabled, and RPC is enabled on device boot, this library will for the ESP32 device into AP+STA mode instead of just AP mode.
+When this setting is enabled (default is disabled), and RPC is enabled on device boot, this library will for the ESP32 device into AP+STA mode instead of just AP mode.
 
 The reason behind this is because ESP32 devices will boot into `AP` mode initially, but when RPC call is made to Scan for WiFi networks, it will force the device to switch into `AP+STA` mode, disconnecting any clients that may be connected.  In my tests I found that some devices, like iPhones, will not reconnect to that WiFi network after the disconnect ... resulting in a bad user experience.
 
 By forcing the device into `AP+STA` mode on boot, this resolves that issue.  When RPC is disabled, this setting will be ignored (and the device will not be forced into any specific mode).
+
+You can also call the `C` function to do this from your own code, `mgos_captive_portal_wifi_rpc_force_apsta` (see below for details)
 
 ## Installation/Usage
 
@@ -134,6 +136,21 @@ Start WiFi connection and credential test.  Response is returned immediately, an
 ## Available Functions/Methods
 
 ### C Functions
+```C
+/**
+ * @brief Force ESP32 Device into AP+STA Mode
+ * 
+ * @return true 
+ */
+bool mgos_captive_portal_wifi_rpc_force_apsta(void);
+```
+
+**mJS Example:**
+```javascript
+let FORCE_AP_STA_MODE = ffi('bool mgos_captive_portal_wifi_rpc_force_apsta()');
+FORCE_AP_STA_MODE();
+```
+
 ```C
 bool mgos_captive_portal_wifi_rpc_start(void);
 ```
