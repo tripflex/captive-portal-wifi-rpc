@@ -14,6 +14,7 @@ config_schema:
   - [ "cportal", "o", {title: "Captive Portal configurations"}]
   - [ "cportal.rpc", "o", {title: "WiFi Captive Portal configurations"}]
   - [ "cportal.rpc.enable", "b", true, {title: "Enable WiFi captive portal RPC endpoints on device boot"}]
+  - [ "cportal.rpc.apsta", "b", true, {title: "(ESP32 only) When RPC is enabled, make sure device is in AP+STA mode to prevent client disconnect when Scan called to switch"}]
   - [ "cportal.rpc.disable", "b", false, {title: "Disable RPC endpoints after successful WiFi test"}]
 
 libs:

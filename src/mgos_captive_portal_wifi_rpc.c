@@ -24,6 +24,10 @@
 #include "mgos_config.h"
 #include "mgos_captive_portal_wifi_setup.h"
 
+#if CS_PLATFORM == CS_P_ESP32
+#include "esp_wifi.h"
+#endif
+
 char *s_test_ssid = NULL;
 char *s_test_pass = NULL;
 bool s_captive_portal_rpc_init = false;
@@ -120,7 +124,16 @@ static void test_success_cb(int ev, void *ev_data, void *userdata){
 bool mgos_captive_portal_wifi_rpc_start(void){
 
     if( ! s_captive_portal_rpc_init ){
-        // Add RPC
+
+#if CS_PLATFORM == CS_P_ESP32
+        // We have to call this to set device in AP+STA mode, as when the Scan is called, it will force the device into
+        // AP+STA mode, causing a disconnect to the client if it's not already in this mode.
+        // By adding this we can set the device in that mode immediately, to prevent that disconnect of the client device
+        // Only relevant on ESP32 devices
+        if( mgos_sys_config_get_cportal_rpc_apsta() ){
+            esp_wifi_set_mode(WIFI_MODE_APSTA);
+        }
+#endif
         struct mg_rpc *c = mgos_rpc_get_global();
         mg_rpc_add_handler(c, "WiFi.PortalTest", "{ssid: %Q, pass: %Q, user: %Q}", mgos_captive_portal_wifi_test_rpc_handler, NULL);
         mg_rpc_add_handler(c, "Wifi.PortalScan", "", mgos_captive_portal_wifi_scan_rpc_handler, NULL);

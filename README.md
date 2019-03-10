@@ -7,6 +7,7 @@
   - [Author](#author)
   - [Features](#features)
   - [Settings](#settings)
+    - [`cportal.rpc.apsta` Setting](#cportalrpcapsta-setting)
   - [Installation/Usage](#installationusage)
     - [Full Captive Portal Stack](#full-captive-portal-stack)
     - [Only this library](#only-this-library)
@@ -41,7 +42,16 @@ Check the `mos.yml` file for latest settings, all settings listed below are defa
 ```yaml
   - [ "cportal.rpc.enable", "b", true, {title: "Enable WiFi captive portal RPC endpoints on device boot"}]
   - [ "cportal.rpc.disable", "b", false, {title: "Disable RPC endpoints after successful WiFi test"}]
+  - [ "cportal.rpc.apsta", "b", true, {title: "(ESP32 only) When RPC is enabled, make sure device is in AP+STA mode to prevent client disconnect when Scan called to switch"}]
 ```
+
+### `cportal.rpc.apsta` Setting
+**This only applies to ESP32 devices**
+When this setting is enabled, and RPC is enabled on device boot, this library will for the ESP32 device into AP+STA mode instead of just AP mode.
+
+The reason behind this is because ESP32 devices will boot into `AP` mode initially, but when RPC call is made to Scan for WiFi networks, it will force the device to switch into `AP+STA` mode, disconnecting any clients that may be connected.  In my tests I found that some devices, like iPhones, will not reconnect to that WiFi network after the disconnect ... resulting in a bad user experience.
+
+By forcing the device into `AP+STA` mode on boot, this resolves that issue.  When RPC is disabled, this setting will be ignored (and the device will not be forced into any specific mode).
 
 ## Installation/Usage
 
@@ -129,8 +139,13 @@ bool mgos_captive_portal_wifi_rpc_start(void);
 ```
 
 ## Changelog
-**1.0.1** (March 10, 2019) - Added support for Enterprise Networks
-**1.0.0** (March 9, 2019) - Initial release
+
+**1.0.1** (March 10, 2019)
+- Added support for Enterprise Networks
+- Added `cportal.rpc.apsta` setting to force ESP32 device into AP+STA mode when RPC enabled
+
+**1.0.0** (March 9, 2019)
+- Initial release
 
 ## License
 Apache 2.0
