@@ -89,7 +89,7 @@ static void mgos_captive_portal_wifi_test_rpc_handler(struct mg_rpc_request_info
     }
 
     if (!mgos_conf_str_empty(user)){
-        LOG(LL_INFO, ("WiFi.PortalTest RPC Handler ssid: %s pass: %s user: %u", ssid, pass, user));
+        LOG(LL_INFO, ("WiFi.PortalTest RPC Handler ssid: %s pass: %s user: %s", ssid, pass, user));
         bool result = mgos_captive_portal_wifi_setup_test_ent( ssid, pass, user, NULL, NULL );
         mg_rpc_send_responsef(ri, "{ ssid: %Q, pass: %Q, user: %Q, result: %B }", ssid, pass, user, result);
     } else {
